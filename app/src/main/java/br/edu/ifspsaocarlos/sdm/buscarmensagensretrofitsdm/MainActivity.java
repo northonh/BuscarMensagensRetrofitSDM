@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,47 +54,49 @@ public class MainActivity extends AppCompatActivity {
 
     public void buscarMensagens(View view) {
         if (view.getId() == R.id.bt_buscar_mensagens) {
-
             // Instanciando o objeto de acesso aos Web Services
             MensageiroApi mensageiroApi = retrofit.create(MensageiroApi.class);
 
             // Enfileirando a requisição em modo assíncrono
-            mensageiroApi.getMensagensByQuery(ultimaMensagemEt.getText().toString(), remetenteEt.getText().toString(), destinatarioEt.getText().toString()).enqueue(
-                    new Callback<ListaMensagem>() {
-                        @Override
-                        public void onResponse(Call<ListaMensagem> call, Response<ListaMensagem> response) {
-                            /* Converte automaticamente o Corpo da Resposta para uma Lista de Mensagens */
-                            ListaMensagem listaMensagem = response.body();
+            mensageiroApi.getRawMensagensByPath(
+                    ultimaMensagemEt.getText().toString(), remetenteEt.getText().toString(),
+                    destinatarioEt.getText().toString())
+                    .enqueue(
+                            new Callback<List<Mensagem>>() {
+                                @Override
+                                public void onResponse(Call<List<Mensagem>> call, Response<List<Mensagem>> response) {
 
-                            // Cria um ArrayList de Strings para guardar o CORPO das mensagens
-                            ArrayList<String> mensagensAl = new ArrayList<>();
+                                    /* Converte automaticamente o Corpo da Resposta para uma Lista de
+                                    Mensagens */
+                                    List<Mensagem> listaMensagem = response.body();
 
-                            // Percorre o JSONArray para recuperar o CORPO das mensagens
-                            for (Mensagem mensagem : listaMensagem.getMensagens()) {
-                                // Recupera o CORPO da mensagem de dentro do JSONObject
-                                mensagensAl.add(mensagem.getCorpo());
+                                    // Cria um ArrayList de Strings para guardar o CORPO das mensagens
+                                    ArrayList<String> mensagensAl = new ArrayList<>();
+
+                                    // Percorre o JSONArray para recuperar o CORPO das mensagens
+                                    for (Mensagem mensagem : listaMensagem) {
+                                        // Recupera o CORPO da mensagem de dentro do JSONObject
+                                        mensagensAl.add(mensagem.getCorpo());
+                                    }
+
+                                    /* Agora com o ArrayList de Strings, cria uma Intent para enviar mostrar essas mensagens*/
+                                    Intent mostrarMensagensIntent = new Intent(getApplicationContext(), MostraMensagensActivity.class);
+                                    // Passa o ArrayList de String como EXTRA para a Intent
+                                    mostrarMensagensIntent.putStringArrayListExtra(MENSAGENS_STRING_ARRAY_EXTRA, mensagensAl);
+
+                                    // Inicia a Activity que vai mostrar as mensagens
+                                    startActivity(mostrarMensagensIntent);
+                                }
+                                @Override
+                                public void onFailure(Call<List<Mensagem>> call, Throwable t) {
+                                    Log.d(getString(R.string.app_name), "falhou");
+                                }
                             }
-                            /* Agora com o ArrayList de Strings, cria uma Intent para enviar mostrar essas mensagens*/
-                            Intent mostrarMensagensIntent = new Intent(getApplicationContext(), MostraMensagensActivity.class);
-
-                            // Passa o ArrayList de String como EXTRA para a Intent
-                            mostrarMensagensIntent.putStringArrayListExtra(MENSAGENS_STRING_ARRAY_EXTRA, mensagensAl);
-
-                            // Inicia a Activity que vai mostrar as mensagens
-                            startActivity(mostrarMensagensIntent);
-                        }
-                        @Override
-                        public void onFailure(Call<ListaMensagem> call, Throwable t) {
-                            Log.d(getString(R.string.app_name), "falhou");
-                        }
-                    }
-            );
-
+                    );
             // Limpa os campos
             limparCampos();
         }
     }
-
     private void limparCampos() {
         remetenteEt.setText("");
         destinatarioEt.setText("");
