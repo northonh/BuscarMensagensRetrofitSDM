@@ -18,4 +18,18 @@ public interface MensageiroApi {
      * para a requisição no formato mensagem?id= */
     @GET("mensagem")
     Call<ResponseBody> getMensagemByQueryId(@Query("id") String id);
+
+    /* Linka requisição HTTP GET para endpoint "mensagem" com o método da Interface getMensagemByPathId
+     * O método recebe uma String ultimaMensagemId, uma String origemId e uma String destinoId como
+     * parâmetros que serão usados para substituir {mensagemId}, {origemId} e {destinoId}, respectivamente
+     * no Path da URL*/
+    @GET("mensagens/{ultimaMensagemId}/{origemId}/{destinoId}")
+    Call<ListaMensagem> getMensagensByPath(@Path("ultimaMensagemId") String id, @Path("origemId") String origemId, @Path("destinoId") String destinoId);
+
+    /* Linka requisição HTTP GET para endpoint "mensagem" com o método da Interface getMensagemByQueryId
+     * O método recebe uma String ultimaMensagemId, uma String origemId e uma String destinoId como
+     * parâmetros que serão usados para enviar os parâmetros para a requisição no formato
+     * mensagem?ultimaMensagemId=100&origemId=1&destinoId=2 */
+    @GET("mensagens")
+    Call<ListaMensagem> getMensagensByQuery(@Query("ultimaMensagemId") String id, @Query("origemId") String origemId, @Query("destinoId") String destinoId);
 }
