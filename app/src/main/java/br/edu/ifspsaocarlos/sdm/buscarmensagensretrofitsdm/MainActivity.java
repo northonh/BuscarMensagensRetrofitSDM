@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             MensageiroApi mensageiroApi = retrofit.create(MensageiroApi.class);
 
             // Enfileirando a requisição em modo assíncrono
-            mensageiroApi.getMensagensByPath(ultimaMensagemEt.getText().toString(), remetenteEt.getText().toString(), destinatarioEt.getText().toString()).enqueue(
+            mensageiroApi.getMensagensByQuery(ultimaMensagemEt.getText().toString(), remetenteEt.getText().toString(), destinatarioEt.getText().toString()).enqueue(
                     new Callback<ListaMensagem>() {
                         @Override
                         public void onResponse(Call<ListaMensagem> call, Response<ListaMensagem> response) {

@@ -29,7 +29,7 @@ public interface MensageiroApi {
     /* Linka requisição HTTP GET para endpoint "mensagem" com o método da Interface getMensagemByQueryId
      * O método recebe uma String ultimaMensagemId, uma String origemId e uma String destinoId como
      * parâmetros que serão usados para enviar os parâmetros para a requisição no formato
-     * mensagem?ultimaMensagemId=100&origemId=1&destinoId=2 */
+     * mensagem?id=100&origem=1&destino=2 */
     @GET("mensagens")
-    Call<ListaMensagem> getMensagensByQuery(@Query("ultimaMensagemId") String id, @Query("origemId") String origemId, @Query("destinoId") String destinoId);
+    Call<ListaMensagem> getMensagensByQuery(@Query("id") String id, @Query("origem") String origemId, @Query("destino") String destinoId);
 }
